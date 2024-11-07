@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApigatewayServerApplication {
+public class AuctionApiGatewayServerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApigatewayServerApplication.class, args);
+        SpringApplication.run(AuctionApiGatewayServerApplication.class, args);
     }
 
 }

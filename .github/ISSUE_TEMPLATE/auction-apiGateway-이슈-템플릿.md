@@ -1,5 +1,5 @@
 ---
-name: aution-apigateway-server 이슈 템플릿
+name: auction-apiGateway-server 이슈 템플릿
 about: 새 기능 추가, 버그 수정 등에 대한 이슈 생성
 title: ''
 labels: ''
