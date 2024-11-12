@@ -1,0 +1,32 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: auction-apiGateway-server
+  cloud:
+    discovery:
+      client:
+        serviceUrl:
+          defaultZone: http://localhost:8761/eureka/
+    gateway:
+        routes:
+          - id: auction-certificate-server
+            uri: lb://auction-certificate-server
+            predicates:
+              - Path=/certificate/**
+
+          - id: member-service-server
+            uri: lb://member-service-server
+            predicates:
+              - Path=/auth/**
+
+          - id: auction-service-server
+            uri: lb://auction-service-server
+            predicates:
+              - Path=/auction/**
+
+          - id: receipt-service-server
+            uri: lb://receipt-service-server
+            predicates:
+              - Path=/receipt/**
