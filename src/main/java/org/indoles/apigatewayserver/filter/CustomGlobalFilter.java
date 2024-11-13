@@ -22,7 +22,7 @@ public class CustomGlobalFilter extends AbstractGatewayFilterFactory<CustomGloba
             return exchange.getSession().flatMap(session -> {
                 // 로그인 및 회원가입 API 제외
                 if (path.startsWith("/members/signup") || path.startsWith("/members/signin") ||
-                        path.startsWith("/auctions/auctions")) {
+                        path.startsWith("/auctions")) {
                     return chain.filter(exchange);
                 }
 
