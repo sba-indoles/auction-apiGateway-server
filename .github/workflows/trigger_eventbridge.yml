@@ -1,0 +1,26 @@
+name: Trigger EventBridge
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  notify_eventbridge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Event to EventBridge
+        env:
+          AWS_REGION: "ap-northeast-2"
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws events put-events --entries '[
+            {
+              "Source": "custom.github",
+              "DetailType": "GitHub Repository Event",
+              "Detail": "{\"eventName\": \"push\", \"branch\": \"dev\", \"repository\": \"apiGateway\"}",
+              "EventBusName": "default"
+            }
+          ]'
