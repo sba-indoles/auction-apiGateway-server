@@ -5,28 +5,23 @@ spring:
   application:
     name: auction-apiGateway-server
   cloud:
-    discovery:
-      client:
-        serviceUrl:
-          defaultZone: http://localhost:8761/eureka/
     gateway:
-        routes:
-          - id: auction-certificate-server
-            uri: lb://auction-certificate-server
-            predicates:
-              - Path=/certificate/**
+      routes:
 
-          - id: member-service-server
-            uri: lb://member-service-server
-            predicates:
-              - Path=/auth/**
+        - id: member-service-server
+          uri: http://127.0.0.1:7070
+          predicates:
+            - Path=/members/**
 
-          - id: auction-service-server
-            uri: lb://auction-service-server
-            predicates:
-              - Path=/auction/**
+        - id: auction-service-server
+          uri: http://127.0.0.1:8080
+          predicates:
+            - Path=/auctions/**
 
-          - id: receipt-service-server
-            uri: lb://receipt-service-server
-            predicates:
-              - Path=/receipt/**
+        - id: receipt-service-server
+          uri: http://127.0.0.1:9090
+          predicates:
+            - Path=/receipts/**
+logging:
+  level:
+    io.netty: DEBUG
