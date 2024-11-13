@@ -4,7 +4,7 @@ pipeline {
     environment {
         BRANCH = 'dev'
         AWS_REGION = 'ap-northeast-2' // ECR 리전 설정
-        ECR_REPO_NAME = "${BRANCH}-apiGateway" // ECR 리포지토리 이름 설정
+        ECR_REPO_NAME = "${BRANCH}-apigateway" // ECR 리포지토리 이름 설정
         IMAGE_TAG = "${env.BUILD_NUMBER}" // 이미지 태그 (빌드 번호)
         AWS_ACCOUNT_ID = '703671902880' // AWS 계정 ID
         ECR_REPO_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}"
