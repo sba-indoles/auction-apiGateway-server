@@ -1,7 +1,9 @@
-package org.indoles.apigatewayserver.exception;
+package org.indoles.apigatewayserver.util;
+
+import org.indoles.apigatewayserver.exception.ErrorCode;
+import org.indoles.apigatewayserver.exception.BadRequestException;
 
 import java.util.Objects;
-import org.indoles.apigatewayserver.util.Role;
 
 public record SignInInfo(Long id, Role role) {
     private static final String ERROR_NULL_VALUE = "%s는 Null일 수 없습니다.";
@@ -21,4 +23,5 @@ public record SignInInfo(Long id, Role role) {
         return this.role.equals(role);
     }
 }
+
 
