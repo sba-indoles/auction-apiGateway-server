@@ -1,4 +1,4 @@
-package org.indoles.apigatewayserver.config;
+package org.indoles.apigatewayserver.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
