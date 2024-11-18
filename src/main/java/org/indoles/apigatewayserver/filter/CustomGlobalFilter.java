@@ -2,15 +2,10 @@ package org.indoles.apigatewayserver.filter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.indoles.apigatewayserver.exception.*;
+import org.indoles.apigatewayserver.service.RefreshTokenService;
 import org.indoles.apigatewayserver.util.JwtTokenProvider;
-import org.indoles.apigatewayserver.util.RefreshTokenClient;
-import org.indoles.apigatewayserver.util.RefreshTokenRequest;
-import org.indoles.apigatewayserver.util.SignInResponseInfo;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -19,12 +14,12 @@ import reactor.core.publisher.Mono;
 public class CustomGlobalFilter extends AbstractGatewayFilterFactory<CustomGlobalFilter.Config> {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenClient refreshTokenClient;
+    private final RefreshTokenService refreshTokenService;
 
-    public CustomGlobalFilter(JwtTokenProvider jwtTokenProvider, @Lazy RefreshTokenClient refreshTokenClient) {
+    public CustomGlobalFilter(JwtTokenProvider jwtTokenProvider, RefreshTokenService refreshTokenService) {
         super(Config.class);
         this.jwtTokenProvider = jwtTokenProvider;
-        this.refreshTokenClient = refreshTokenClient;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
@@ -38,6 +33,7 @@ public class CustomGlobalFilter extends AbstractGatewayFilterFactory<CustomGloba
             }
 
             String authorizationHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
+
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 String accessToken = authorizationHeader.substring(7);
 
@@ -46,8 +42,10 @@ public class CustomGlobalFilter extends AbstractGatewayFilterFactory<CustomGloba
                 } else {
                     String refreshToken = exchange.getRequest().getHeaders().getFirst("Refresh-Token");
                     if (refreshToken != null) {
-                        return refreshAccessToken(refreshToken)
+
+                        return refreshTokenService.refreshAccessToken(refreshToken)
                                 .flatMap(newAccessToken -> {
+
                                     var mutatedRequest = exchange.getRequest().mutate()
                                             .header("Authorization", "Bearer " + newAccessToken)
                                             .build();
@@ -62,19 +60,6 @@ public class CustomGlobalFilter extends AbstractGatewayFilterFactory<CustomGloba
         };
     }
 
-    private Mono<String> refreshAccessToken(String refreshToken) {
-        RefreshTokenRequest request = new RefreshTokenRequest(refreshToken);
-        ResponseEntity<SignInResponseInfo> responseEntity = refreshTokenClient.refreshAccessToken(request);
-
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            return Mono.just(responseEntity.getBody().accessToken()); // 새로운 액세스 토큰 반환
-        }
-        return Mono.error(new RuntimeException("Failed to refresh access token."));
-    }
-
     public static class Config {
     }
 }
-
-
-
