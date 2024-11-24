@@ -17,6 +17,43 @@ pipeline {
             }
         }
 
+        stage('Modify application.yml') {
+            steps {
+                script {
+                    writeFile file: 'src/main/resources/application.yml', text: '''\
+
+server:
+  port: ${PORT}
+
+spring:
+  gateway:
+    routes:
+      - id: member_service
+        uri: ${MEMBER-URL}
+        predicates:
+          - Path=/members/**
+      - id: auction_service
+        uri: ${AUCTION-URL}
+        predicates:
+          - Path=/auctions/**
+      - id: receipt_service
+        uri: ${RECEIPT-URL}
+        predicates:
+          - Path=/receipts/**
+  
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000
+  header: Authorization
+  prefix: Bearer
+  type: JWT
+'''
+
         stage('Build JAR File') {
             steps {
                 sh './gradlew build -x test'
