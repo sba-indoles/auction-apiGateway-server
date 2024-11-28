@@ -28,7 +28,7 @@ public class CustomGlobalFilter extends AbstractGatewayFilterFactory<CustomGloba
             String path = exchange.getRequest().getURI().getPath();
             log.info("Request Path: {}", path);
 
-            if (path.startsWith("/members/signup") || path.startsWith("/members/signin") || path.startsWith("/auctions")) {
+            if (path.startsWith("/members/signup") || path.startsWith("/members/signin") || path.startsWith("/auctions/search") || path.startsWith("/auctions/{auctionId}")) {
                 return chain.filter(exchange);
             }
 
